@@ -4,7 +4,7 @@ var lines = s => s.trim().split("\n");
 
 function defaultdict(factory, initial) {
   return new Proxy({}, {
-    get(o, k) { return k in o ? o[k] : factory(initial); }
+    get(o, k) { return k in o ? o[k] : (o[k] = factory(initial)); }
   });
 }
 
