@@ -34,9 +34,7 @@ function unmarked(b) {
   }
   return o;
 }
-function reset(b) { for (var i = 0; i < W * H; i++) b[i].m = false; }
-function run(bs, ns, last) {
-  bs.forEach(reset);
+function run(bs, ns) {
   var ws = [], wsa = [];
   for (var n of ns) {
     for (var b of bs) {
@@ -52,7 +50,7 @@ function run(bs, ns, last) {
       }
     }
   }
-  return wsa[last ? wsa.length - 1 : 0];
+  return [wsa[0], wsa[wsa.length - 1]];
 }
 
 var li = 0, read = () => xs[li++], done = () => li >= xs.length;
@@ -64,5 +62,6 @@ while (!done()) {
   ];
   bs.push(b);
 }
-console.log(run(bs, ns, false));
-console.log(run(bs, ns, true));
+var [first, last] = run(bs, ns);
+console.log(first);
+console.log(last);
