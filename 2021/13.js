@@ -8,7 +8,7 @@ function display(xs, w, h) {
   var o = [];
   for (var y = 0; y < h; y++) {
     for (var x = 0; x < w; x++)
-      o.push(xs[x + y * w] === 1 ? "#" : ".");
+      o.push(xs.get(x + "_" + y) === 1 ? "#" : ".");
     o.push("\n");
   }
   return o.join("");
@@ -20,19 +20,16 @@ function fold(xs, w, h, axis, pos) {
     : [w, Math.max(pos, (h - 1) - pos)]
   );
   var [nbx, nby] = axis === "x" ? [nw - pos, 0] : [0, nh - pos];
-  var next = Array(nw * nh).fill(0);
-  for (var py = 0; py < h; py++) {
-    for (var px = 0; px < w; px++) {
-      var nx = Math.min(nw - Math.abs((nw - nbx) - px), nw - 1);
-      var ny = Math.min(nh - Math.abs((nh - nby) - py), nh - 1);
-      if (nx >= 0 && nx < nw && ny >= 0 && ny < nh)
-        next[nx + ny * nw] |= xs[px + py * w];
-    }
+  var next = new Map();
+  for (var [px, py] of [...xs.keys()].map(x => x.split("_").map(int))) {
+    var nx = Math.min(nw - Math.abs((nw - nbx) - px), nw - 1);
+    var ny = Math.min(nh - Math.abs((nh - nby) - py), nh - 1);
+    next.set(`${nx}_${ny}`, 1);
   }
   return [next, nw, nh];
 }
 function part1(xs, w, h, [axis, pos]) {
-  return sum(fold(xs, w, h, axis, pos)[0].map(x => x));
+  return sum([...fold(xs, w, h, axis, pos)[0].values()]);
 }
 function part2(xs, w, h, folds) {
   return display(...folds.reduce(([xs, w, h], [axis, pos]) => (
@@ -53,8 +50,7 @@ folds = folds.map(x => {
   return [axis, int(pos)];
 });
 
-var xs = Array(w * h).fill(0);
-for (var [dx, dy] of dots) xs[dx + dy * w] |= 1;
+var xs = new Map(dots.map((([x, y]) => [`${x}_${y}`, 1])));
 
 console.log(part1(xs, w, h, folds[0]));
 console.log(part2(xs, w, h, folds));
