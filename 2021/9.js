@@ -18,7 +18,10 @@ function run(xs, w, h) {
       var lowest = Infinity;
       for (var yy = -1; yy <= 1; yy++) {
         for (var xx = -1; xx <= 1; xx++) {
-          if (xx === yy || (xx === 0 && yy === 0)) continue;
+          if (
+            Math.abs(xx) === Math.abs(yy)
+            || (xx === 0 && yy === 0)
+          ) continue;
           var nx = x + xx, ny = y + yy;
           if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
           lowest = Math.min(lowest, xs[at(nx, ny)].height);
